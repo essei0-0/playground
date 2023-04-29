@@ -57,6 +57,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def search_address
+    zipcode = params[:zipcode]
+    puts "search_address_test"
+    hash = AddressSearcher.search_address(zipcode, full_address: true)
+    result = hash["results"].first
+    puts result
+    render json: result
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -65,6 +74,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :age)
+      params.require(:user).permit(:name, :age, :zipcode, :address, :building)
     end
 end

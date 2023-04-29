@@ -22,6 +22,54 @@
   </div>
 
   <div>
+    <%= form.label :zipcode, style: "display: block" %>
+    <%= form.text_field :zipcode, id: "user_zipcode" %>
+    <%= button_tag "Search Address", type: "button", id: "searchBtn" %>
+  </div>
+
+  <div>
+    <%= form.label :address, style: "display: block" %>
+    <%= form.text_field :address %>
+  </div>
+
+  <div>
+    <%= form.label :building, style: "display: block" %>
+    <%= form.text_field :building %>
+  </div>
+
+
     <%= form.submit %>
   </div>
 <% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const searchBtn = document.getElementById("searchBtn");
+  const zipcodeInput = document.getElementById("user_zipcode");
+  const addressInput = document.getElementById("user_address");
+
+  searchBtn.addEventListener("click", () => {
+    const zipcode = zipcodeInput.value;
+    if (zipcode) {
+      fetch(`/users/search_address?zipcode=${zipcode}`)
+        .then(response => {
+          return response.json(); // レスポンスのJSONをパースしてJavaScriptオブジェクトに変換する
+        })
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+          } else {
+            console.log(data);
+            addressInput.value = data.full_address;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          alert("An error occurred while fetching the address.");
+        });
+    } else {
+      alert("Please enter a valid zipcode.");
+    }
+  });
+});
+</script>
